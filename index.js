@@ -3,7 +3,7 @@ const colors = require('colors');
 
 puppeteer.launch().then(async browser => {
   let page = await browser.newPage();
-  await page.goto('http://es6.ruanyifeng.com/#README', { waitUntil: 'networkidle2' });
+  await page.goto('http://es6.ruanyifeng.com/#README', { waitUntil: 'networkidle0' });
   let aTags = await page.evaluate(() => {
     let as = [...document.querySelectorAll('#sidebar ol li a')];
     return as.map((a) =>{
@@ -20,7 +20,7 @@ puppeteer.launch().then(async browser => {
   for (let i = 1; i < aTags.length; i++) {
     page = await browser.newPage();
     let a = aTags[i];
-    await page.goto(a.href, { waitUntil: 'networkidle2' });
+    await page.goto(a.href, { waitUntil: 'networkidle0' });
     await page.pdf({path: `./pdf/${i + 1} - ${a.name}.pdf`});
     console.log(`${a.name}抓取完成！`);
     await page.close();
