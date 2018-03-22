@@ -1,10 +1,11 @@
 const puppeteer = require('puppeteer');
+const colors = require('colors');
 
-puppeteer.launch({headless: false}).then(async browser => {
+puppeteer.launch().then(async browser => {
   let page = await browser.newPage();
-  await page.goto('http://es6.ruanyifeng.com/#README', { waitUntil: 'networkidle0' });
+  await page.goto('http://es6.ruanyifeng.com/#README', { waitUntil: 'networkidle2' });
   let aTags = await page.evaluate(() => {
-    let as = [...document.querySelectorAll('ol li a')];
+    let as = [...document.querySelectorAll('#sidebar ol li a')];
     return as.map((a) =>{
       return {
         name: a.text,
@@ -12,25 +13,22 @@ puppeteer.launch({headless: false}).then(async browser => {
       }
     });
   });
+  await page.pdf({path: `./pdf/1 - ${aTags[0].name}.pdf`});
+  console.log(`${aTags[0].name}抓取完成！`);
+  await page.close();
+
+  for (let i = 1; i < aTags.length; i++) {
+    page = await browser.newPage();
+    let a = aTags[i];
+    await page.goto(a.href, { waitUntil: 'networkidle2' });
+    await page.pdf({path: `./pdf/${i + 1} - ${a.name}.pdf`});
+    console.log(`${a.name}抓取完成！`);
+    await page.close();
+  }
+  console.log('*************************************'.rainbow);
+  console.log('所有页面均抓取完成！'.rainbow);
+  console.log('*************************************'.rainbow);
 
   await browser.close();
 });
 
-// (async () => {
-//   const browser = await puppeteer.launch();
-//   const page = await browser.newPage();
-//   await page.goto('http://es6.ruanyifeng.com/#README');
-//   await page.waitForNavigation({ waitUntil: 'load' });
-//   let aTags = await page.evaluate(() => {
-//     let as = [...document.querySelectorAll('ol li a')];
-//     return as.map((a) =>{
-//       return {
-//         href: a.href.trim(),
-//         name: a.text
-//       }
-//     });
-//   });
-//   console.log(aTags);
-
-//   await browser.close();
-// })();

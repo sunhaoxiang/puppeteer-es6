@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/sunhaoxiang/puppeteer-es6#readme",
   "dependencies": {
+    "colors": "^1.2.1",
     "puppeteer": "^1.2.0"
   }
 }
